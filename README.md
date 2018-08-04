@@ -21,14 +21,14 @@ model = GSCV(GradientBoostingClassifier(), X, y, cv=10, n_jobs=1, params=None)
 ```
 ```
 
-#### score
+## score
 ```
 ```
 
-#### get_best_estimator
+## get_best_estimator
 ```
 ```
 
-#### get_fit_details
+## get_fit_details
 ```
 ```
