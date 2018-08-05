@@ -1,3 +1,6 @@
+"""
+FIxME module add docstrings
+"""
 from unittest import TestCase, main
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -5,6 +8,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from easy_gscv.models import GSCV
+
+# pylint: disable=C0103
+# 'x' and 'y' are very descriptive in the realm of datascience.
 
 
 class TestExceptions(TestCase):
@@ -16,37 +22,43 @@ class TestExceptions(TestCase):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
 
         class Nothing:
+            """Nonsense object that should not pass"""
             def __init__(self, a):
                 self.a = a
 
         class NothingWithName:
+            """(Another) nonsense object that should not pass"""
             def __init__(self, a):
                 self.__name__ = a
 
         self.wrong_object = Nothing(a='horse')
-        self.wrong_with_name = Nothing(a='Charles')
+        self.wrong_with_name = NothingWithName(a='Charles')
         self.wrong_clf = DecisionTreeClassifier()
         self.valid_clf = KNeighborsClassifier()
 
     def test_check_model_not_a_model(self):
+        """FIXME add docstring"""
         with self.assertRaises(TypeError):
-            GSCV('doesnotexist', self.X, self.y)
+            GSCV('doesnotexist', self.x, self.y)
 
     def test_check_model_not_a_sklearn_model(self):
+        """FIXME add docstring"""
         with self.assertRaises(TypeError):
-            GSCV(self.wrong_object, self.X, self.y)
+            GSCV(self.wrong_object, self.x, self.y)
 
     def test_check_model_wrong_with_name(self):
+        """FIXME add docstring"""
         with self.assertRaises(TypeError):
-            GSCV(self.wrong_with_name, self.X, self.y)
+            GSCV(self.wrong_with_name, self.x, self.y)
 
     def test_check_wrong_scikit_model(self):
+        """FIXME add docstring"""
         with self.assertRaises(ValueError):
-            GSCV(self.wrong_clf, self.X, self.y)
+            GSCV(self.wrong_clf, self.x, self.y)
 
 
 class TestKNeighborsClassifier(TestCase):
@@ -58,12 +70,13 @@ class TestKNeighborsClassifier(TestCase):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
         self.valid_clf = KNeighborsClassifier()
 
     def test_default_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y)
+        """FIXME add docstring"""
+        model = GSCV(self.valid_clf, self.x, self.y)
         self.assertEqual(
             model.params, {
                 'n_neighbors': [3, 5, 8, 10, 15],
@@ -72,7 +85,8 @@ class TestKNeighborsClassifier(TestCase):
         )
 
     def test_custom_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        """Test that custom params override the default ones"""
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'n_neighbors': [3, 15],
             'weights': ['uniform'],
         })
@@ -84,54 +98,44 @@ class TestKNeighborsClassifier(TestCase):
         )
 
     def test_create(self):
-        """
-        Test that the create method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        """Test that the create method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y)
         result = model.create()
         self.assertTrue(result is not None)
 
     def test_score(self):
-        """
-        Test that the create method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        """Test that the create method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y)
         score = model.score()
         self.assertTrue(score is not None)
         self.assertTrue(0 <= score <= 1)
 
     def test_get_best_estimator(self):
-        """
-        Test that the 'get_best_estimator' method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        """Test that the 'get_best_estimator' method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y)
         best_model = model.get_best_estimator()
         self.assertTrue(best_model is not None)
 
     def test_get_fit_details(self):
-        """
-        Test that the 'get_fit_details' method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        """Test that the 'get_fit_details' method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y)
         fit_details = model.get_fit_details()
         self.assertTrue(fit_details is not None)
 
 
 class TestLogisticRegression(TestCase):
-    """
-    Make sure that the model is created and the methods work
-    """
+    """ Make sure that the model is created and the methods work """
 
     def setUp(self):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
         self.valid_clf = LogisticRegression()
 
     def test_default_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         self.assertEqual(
             model.params, {
                 'C': [0.01, 1, 100],
@@ -140,7 +144,8 @@ class TestLogisticRegression(TestCase):
         )
 
     def test_custom_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        """Test that custom params override the default ones"""
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'C': [1, 100],
             'penalty': ['l2']
         })
@@ -155,7 +160,7 @@ class TestLogisticRegression(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         result = model.create()
         self.assertTrue(result is not None)
 
@@ -163,7 +168,7 @@ class TestLogisticRegression(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         score = model.score()
         self.assertTrue(score is not None)
         self.assertTrue(0 <= score <= 1)
@@ -172,7 +177,7 @@ class TestLogisticRegression(TestCase):
         """
         Test that the 'get_best_estimator' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         best_model = model.get_best_estimator()
         self.assertTrue(best_model is not None)
 
@@ -180,7 +185,7 @@ class TestLogisticRegression(TestCase):
         """
         Test that the 'get_fit_details' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         fit_details = model.get_fit_details()
         self.assertTrue(fit_details is not None)
 
@@ -194,15 +199,15 @@ class TestMLPClassifier(TestCase):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
         self.valid_clf = MLPClassifier()
 
     def test_default_params(self):
         """
         For this model the values are dependend on the dataset used
         """
-        model = GSCV(self.valid_clf, self.X, self.y)
+        model = GSCV(self.valid_clf, self.x, self.y)
         self.assertEqual(
             model.params, {
                 'hidden_layer_sizes': [
@@ -216,7 +221,8 @@ class TestMLPClassifier(TestCase):
         )
 
     def test_custom_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        """Test that custom params override the default ones"""
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'alpha': [0.0001, 0.01, 0.1, 1]
         })
         self.assertEqual(
@@ -229,7 +235,7 @@ class TestMLPClassifier(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'alpha': [0.0001, 0.01, 0.1, 1]
         })
         result = model.create()
@@ -239,7 +245,7 @@ class TestMLPClassifier(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'alpha': [0.0001, 0.01, 0.1, 1]
         })
         score = model.score()
@@ -250,7 +256,7 @@ class TestMLPClassifier(TestCase):
         """
         Test that the 'get_best_estimator' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'alpha': [0.0001, 0.01, 0.1, 1]
         })
         best_model = model.get_best_estimator()
@@ -260,7 +266,7 @@ class TestMLPClassifier(TestCase):
         """
         Test that the 'get_fit_details' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, params={
+        model = GSCV(self.valid_clf, self.x, self.y, params={
             'alpha': [0.0001, 0.01, 0.1, 1]
         })
         fit_details = model.get_fit_details()
@@ -276,12 +282,12 @@ class TestRandomForestClassifier(TestCase):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
         self.valid_clf = RandomForestClassifier()
 
     # def test_default_params(self):
-    #     model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1)
+    #     model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1)
     #     self.assertEqual(
     #         model.params, {
     #             'n_estimators': [100, 500, 1000],
@@ -291,7 +297,8 @@ class TestRandomForestClassifier(TestCase):
     #     )
 
     def test_custom_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that custom params override the default ones"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'max_features': ['sqrt'],
             'max_depth': [3],
@@ -308,7 +315,7 @@ class TestRandomForestClassifier(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'max_features': ['sqrt'],
             'max_depth': [3],
@@ -320,7 +327,7 @@ class TestRandomForestClassifier(TestCase):
         """
         Test that the create method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'max_features': ['sqrt'],
             'max_depth': [3],
@@ -333,7 +340,7 @@ class TestRandomForestClassifier(TestCase):
         """
         Test that the 'get_best_estimator' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'max_features': ['sqrt'],
             'max_depth': [3],
@@ -345,7 +352,7 @@ class TestRandomForestClassifier(TestCase):
         """
         Test that the 'get_fit_details' method returns a value
         """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'max_features': ['sqrt'],
             'max_depth': [3],
@@ -363,12 +370,12 @@ class TestGradientBoostingClassifier(TestCase):
         # Get data
         from sklearn import datasets
         iris = datasets.load_iris()
-        self.X = iris.data
-        self.y = iris.target
+        self.x = iris['data']
+        self.y = iris['target']
         self.valid_clf = GradientBoostingClassifier()
 
     # def test_default_params(self):
-    #     model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1)
+    #     model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1)
     #     self.assertEqual(
     #         model.params, {
     #             'n_estimators': [100, 500, 1000],
@@ -379,7 +386,8 @@ class TestGradientBoostingClassifier(TestCase):
     #     )
 
     def test_custom_params(self):
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that custom params override the default ones"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'learning_rate': [0.1, 0.5],
             'max_depth': [1, 3],
@@ -395,10 +403,8 @@ class TestGradientBoostingClassifier(TestCase):
         )
 
     def test_create(self):
-        """
-        Test that the create method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that the create method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'learning_rate': [0.1],
             'max_depth': [1],
@@ -408,10 +414,8 @@ class TestGradientBoostingClassifier(TestCase):
         self.assertTrue(result is not None)
 
     def test_score(self):
-        """
-        Test that the create method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that the create method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'learning_rate': [0.1],
             'max_depth': [1],
@@ -422,10 +426,8 @@ class TestGradientBoostingClassifier(TestCase):
         self.assertTrue(0 <= score <= 1)
 
     def test_get_best_estimator(self):
-        """
-        Test that the 'get_best_estimator' method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that the 'get_best_estimator' method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'learning_rate': [0.1],
             'max_depth': [1],
@@ -435,10 +437,8 @@ class TestGradientBoostingClassifier(TestCase):
         self.assertTrue(best_model is not None)
 
     def test_get_fit_details(self):
-        """
-        Test that the 'get_fit_details' method returns a value
-        """
-        model = GSCV(self.valid_clf, self.X, self.y, n_jobs=-1, params={
+        """Test that the 'get_fit_details' method returns a value"""
+        model = GSCV(self.valid_clf, self.x, self.y, n_jobs=-1, params={
             'n_estimators': [100],
             'learning_rate': [0.1],
             'max_depth': [1],
