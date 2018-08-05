@@ -1,4 +1,6 @@
 language: python
+python:
+  - "3.7"
 install:
   - pip install -r dependencies/requirements.txt
 # command to run tests
@@ -6,5 +8,6 @@ script:
   - pytest # or py.test for Python versions 3.5 and below
   - flake8 easy_gscv/models.py
   - coverage run test/test_gscv.py
+
 after_success:
-  - coveralls
+codecov
