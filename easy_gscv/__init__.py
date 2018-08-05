@@ -1,5 +1,5 @@
 """
-FIXME add docstring
+Scripts folder.
 """
 # from .models import GSCV
 NAME = 'easy-gscv'

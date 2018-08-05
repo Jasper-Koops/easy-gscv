@@ -4,9 +4,7 @@
 
 This library allows you to quickly train machine learning classifiers by
 automatically splitting the dataset and using both
-[grid search](https://en.wikipedia.org/wiki/Hyperparameter_optimization) and [cross validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) in the training process.
-
-Users can either pass define the parameters themselves or let the **GSCV** object
+[grid search](https://en.wikipedia.org/wiki/Hyperparameter_optimization) and [cross validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) in the training process. Users can either pass define the parameters themselves or let the **GSCV** object
 choose them automatically (based on the classifier).
 
 This library is an extension of the [scikit-learn](http://scikit-learn.org/stable/index.html) project.
@@ -34,14 +32,9 @@ gscv_model.score()
 ```
 
 
-#### create
+## create
 
-No need to create separate train / test datasets, the model does this
-automatically on initialization.
-
-If no parameters are provided the grid search is performed on a default set.
-But these can be overridden.
-
+```
 clf = LogisticRegression()
 gscv_model = GSCV(
     clf(), X, y, cv=15, n_jobs=-1, params={
@@ -49,10 +42,15 @@ gscv_model = GSCV(
         'penalty': ['l2']
     }
 )
+```
+
+No need to create separate train / test datasets, the model does this
+automatically on initialization.
+If no parameters are provided the grid search is performed on a default set.
+But these can be overridden.
 
 The number of folds to be used for cross validation can be specified
 by using the `cv` keyword.
-
 To speed up the training process you can use the `n_jobs` parameter to
 set the number of cpu cores to use (or set it to `-1` to use all available.)
 
@@ -73,8 +71,9 @@ how well the model can be generalized by scoring it against the test dataset.
 gscv_model.get_best_estimator()
 ```
 
-Returns the best scoring sklearn classifier, trained
-
+Returns the best scoring sklearn classifier (based on training data).
+As its a valid scikit-learn classifier, you can use it do anything that
+you could do with sklearn classifier.
 
 The following classifiers are currently supported. With the eventual goal of
 supporting all scikit-learn classifiers in the future.
@@ -87,6 +86,14 @@ supporting all scikit-learn classifiers in the future.
 
 
 ## get_fit_details
+
+As cross validation returns an average, it can be helpful to
+get a more detailed overview of the best scoring classifier.
+
+This method returns a table like the one displayed below, which
+then can be used to further refine the choice or parameters for
+subsequent runs.
+
 ```
 gscv_model.get_fit_details()
 
