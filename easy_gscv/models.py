@@ -1,5 +1,5 @@
 """
-# FIXME add module docstring
+High level objects to automate large parts of the classifier training workflow.
 """
 from typing import Optional, Dict, Union
 from sklearn.model_selection import (  # type: ignore
@@ -20,14 +20,18 @@ ScikitClassifiers = Union[
     MLPClassifier
 ]
 
+# pylint: disable=too-many-instance-attributes
+# pylint: disable-msg=too-many-arguments
+# Arguments are needed to build the models.
+
 
 class GSCV:
     """
-    FIXME add docstring
+    This object will build trained classifiers with the specified parameters.
+    Training / testing datasets are created automatically from the
+    [X,y] keywords and the models are trained using
+    grid search and cross validation.
     """
-    # pylint: disable=too-many-instance-attributes
-    # pylint: disable-msg=too-many-arguments
-    # Arguments are needed to build the models.
 
     def __init__(
             self, clf, X, y, cross_vals: int = 10, random_state: int = 42,
