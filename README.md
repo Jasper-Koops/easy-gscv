@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Jasper-Koops/easy-gscv.svg?branch=master)](https://travis-ci.org/Jasper-Koops/easy-gscv)
+[![codecov](https://codecov.io/gh/Jasper-Koops/easy-gscv/branch/master/graph/badge.svg)](https://codecov.io/gh/Jasper-Koops/easy-gscv)
+
 ## Easy Grid Search / Cross Validation
 
 *From data to score in 4 lines of code.*
@@ -19,8 +22,8 @@ from easy_gscv.models import GSCV
 
 # Create test dataset
 iris = datasets.load_iris()
-self.X = iris.data
-self.y = iris.target
+X = iris.data
+y = iris.target
 clf = MLPClassifier()
 
 # Create model instance
