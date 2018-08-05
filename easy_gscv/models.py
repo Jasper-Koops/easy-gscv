@@ -65,7 +65,7 @@ class GSCV:
         self.gs_model = self.create()
 
     @staticmethod
-    def _get_model_name(clf, target='classifier'):
+    def _get_model_name(clf, target='classifier') -> str:
         """
         With sklearn classifiers missing the '__name__' attribute,
         getting their name has proven to be suprisingly tricky.
@@ -105,7 +105,7 @@ class GSCV:
         if self._get_model_name(clf, 'classifier') not in param_dict_models:
             raise ValueError(error_message)
 
-    def _get_model_params(self):
+    def _get_model_params(self) -> Dict:
         """
         An Internal method to get a matching model_param dict for the
         provided classifier, called only if no params are provided.
@@ -155,7 +155,7 @@ class GSCV:
         params = param_dict[self._get_model_name(self.clf, 'classifier')]
         return params
 
-    def create(self):
+    def create(self) -> GridSearchCV:
         """
         Train the classifier with gridsearch and cross evaluation enabled.
         Return GSCV model. Warning: The returned model is not a classifier!
@@ -166,20 +166,20 @@ class GSCV:
         gs_model.fit(self.x_train, self.y_train)
         return gs_model
 
-    def score(self):
+    def score(self) -> float:
         """
         Scores the best_estimator on the X_test and y_test
         datasets and returns it.
         """
         return self.gs_model.best_estimator_.score(self.x_test, self.y_test)
 
-    def get_best_estimator(self):
+    def get_best_estimator(self) -> object:
         """
         Return the best_estimator object
         """
         return self.gs_model.best_estimator_
 
-    def get_fit_details(self):
+    def get_fit_details(self) -> str:
         """
         Print a table that shows the (training) scores
         for the various parameter combinations.
