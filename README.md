@@ -22,8 +22,8 @@ from easy_gscv.models import GSCV
 
 # Create test dataset
 iris = datasets.load_iris()
-self.X = iris.data
-self.y = iris.target
+X = iris.data
+y = iris.target
 clf = MLPClassifier()
 
 # Create model instance
