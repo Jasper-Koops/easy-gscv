@@ -1,7 +1,7 @@
 """
 High level objects to automate large parts of the classifier training workflow.
 """
-from typing import Optional, Dict, KeysView, Union
+from typing import Optional, Dict, Union, List
 from sklearn.model_selection import (  # type: ignore
     train_test_split, GridSearchCV
 )  # type: ignore
@@ -173,9 +173,9 @@ class GSCV:
         return params
 
     @property
-    def classifiers(self) -> KeysView[str]:
+    def classifiers(self) -> List[str]:
         """Returns a list of all valid classifiers"""
-        return self.model_dict.keys()
+        return [key for key, value in self.model_dict.items()]
 
     def create(self) -> GridSearchCV:
         """

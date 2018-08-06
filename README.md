@@ -12,6 +12,8 @@ choose them automatically (based on the classifier).
 
 This library is an extension of the [scikit-learn](http://scikit-learn.org/stable/index.html) project.
 
+[View on pypi](https://pypi.org/project/easy-gscv/)
+
 
 ### Example:
 
