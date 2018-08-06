@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="easy-gscv",
-    version="0.0.14",
+    version="0.1.0",
     author="Jasper Koops",
     author_email="jasperkoops91@gmail.com",
     description=(
@@ -20,9 +20,9 @@ setuptools.setup(
     url="https://github.com/Jasper-Koops/easy-gscv",
     packages=setuptools.find_packages(exclude=['venv']),
     install_requires=[
-        #   'numpy',
-        #   'scipy',
-        #   'scikit-learn',
+        'numpy',
+        'scipy',
+        'scikit-learn',
     ],
     classifiers=(
         "Programming Language :: Python :: 3.7",
