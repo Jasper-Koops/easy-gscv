@@ -18,7 +18,7 @@ This library is an extension of the [scikit-learn](http://scikit-learn.org/stabl
 ```
 from sklearn.neural_network import MLPClassifier
 from sklearn import datasets
-from easy_gscv.models import GSCV
+from easy_gscv.classifiers import GSCV
 
 # Create test dataset
 iris = datasets.load_iris()
@@ -56,6 +56,21 @@ The number of folds to be used for cross validation can be specified
 by using the `cv` keyword.
 To speed up the training process you can use the `n_jobs` parameter to
 set the number of cpu cores to use (or set it to `-1` to use all available.)
+
+The model accepts either sklearn classifiers or string values.
+You can get a list of valid classifiers by calling the 'classifiers' property. Passing string arguments to the GSCV object in turn saves
+you from having to import sklearn classifiers yourself.
+
+```
+gscv_model = GSCV('RandomForestClassifier',, X, y)
+gscv_model.classifiers
+
+'KNeighborsClassifier',
+'RandomForestClassifier',
+'GradientBoostingClassifier',
+'MLPClassifier',
+'LogisticRegression',
+```
 
 
 ## score
@@ -98,6 +113,8 @@ then can be used to further refine the choice or parameters for
 subsequent runs.
 
 ```
+clf = KNeighborsClassifier()
+gscv_model = GSCV(clf(), X, y)
 gscv_model.get_fit_details()
 
 0.965 (+/-0.026) for {'weights': 'uniform', 'n_neighbors': 3}

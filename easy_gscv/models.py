@@ -1,7 +1,7 @@
 """
 High level objects to automate large parts of the classifier training workflow.
 """
-from typing import Optional, Dict, Union
+from typing import Optional, Dict, KeysView, Union
 from sklearn.model_selection import (  # type: ignore
     train_test_split, GridSearchCV
 )  # type: ignore
@@ -33,21 +33,30 @@ class GSCV:
     grid search and cross validation.
     """
 
+    # Dictionary with all suported classifiers as values
+    # and matching strings as keys
+    model_dict = {
+        'KNeighborsClassifier': KNeighborsClassifier(),
+        'RandomForestClassifier': RandomForestClassifier(),
+        'GradientBoostingClassifier': GradientBoostingClassifier(),
+        'MLPClassifier': MLPClassifier(),
+        'LogisticRegression': LogisticRegression(),
+    }
+
     def __init__(
             self, clf, X, y, cross_vals: int = 10, random_state: int = 42,
             test_size: float = 0.33, n_jobs: int = 1,
             params: Optional[Dict[str, Union[str, float]]] = None
     ) -> None:
 
-        # Check if classifier is valid
-        self._check_model(clf)
+        # Check if classifier is valid and assign it if true
+        self.clf = self._get_model(clf)
 
         # Split data into Train and test sets
         x_train, x_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=random_state
         )
 
-        self.clf = clf
         self.x_train = x_train
         self.y_train = y_train
         self.x_test = x_test
@@ -80,30 +89,38 @@ class GSCV:
             ).replace('<', '').split('.')[0]
         return name
 
-    def _check_model(self, clf: ScikitClassifiers):
+    def _get_model(
+            self, clf: Union[str, ScikitClassifiers]
+    ) -> ScikitClassifiers:
         """
-        An internal method that checks if the provided classifier
-        exists in the param_dict. It will raise an error if not.
+        Fetches to correct model for the provided clf string
+        or returns an error message if the clf is invalid.
         """
-        param_dict_models = [
-            'KNeighborsClassifier',
-            'RandomForestClassifier',
-            'GradientBoostingClassifier',
-            'MLPClassifier',
-            'LogisticRegression',
-        ]
+
         error_message = """
         Model not supported! Please use one of the following classifiers:
         \n {}
-        """.format(", ".join(map(str, param_dict_models)))
+        """.format(", ".join(map(str, self.model_dict)))
+
+        # If a string is passed instead of a sklearn classifier
+        # the program should check if the string matches a supported
+        # classifier
+        if isinstance(clf, str):
+            if clf not in self.model_dict.keys():
+                raise ValueError(error_message)
+            return self.model_dict[clf]
 
         if self._get_model_name(clf, 'class') != 'sklearn':
             raise TypeError(
                 'The classifier is not a valid scikit-learn classifier!'
             )
 
-        if self._get_model_name(clf, 'classifier') not in param_dict_models:
+        if self._get_model_name(clf, 'classifier') \
+                not in self.model_dict.keys():
             raise ValueError(error_message)
+
+        name = self._get_model_name(clf, 'classifier')
+        return self.model_dict[name]
 
     def _get_model_params(self) -> Dict:
         """
@@ -154,6 +171,11 @@ class GSCV:
         }
         params = param_dict[self._get_model_name(self.clf, 'classifier')]
         return params
+
+    @property
+    def classifiers(self) -> KeysView[str]:
+        """Returns a list of all valid classifiers"""
+        return self.model_dict.keys()
 
     def create(self) -> GridSearchCV:
         """

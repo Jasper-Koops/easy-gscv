@@ -12,6 +12,72 @@ from easy_gscv.models import GSCV
 # pylint: disable=C0103
 # 'x' and 'y' are very descriptive in the realm of datascience.
 
+# pylint: disable=W0212
+# Method call required for testing
+
+
+class TestProperties(TestCase):
+    """
+    Make all model properties work as they should.
+    """
+
+    def setUp(self):
+        # Get data
+        from sklearn import datasets
+        iris = datasets.load_iris()
+        self.x = iris['data']
+        self.y = iris['target']
+        self.clf = KNeighborsClassifier()
+        self.model = GSCV(self.clf, self.x, self.y)
+        self.model_dict = {
+            'KNeighborsClassifier': KNeighborsClassifier(),
+            'RandomForestClassifier': RandomForestClassifier(),
+            'GradientBoostingClassifier': GradientBoostingClassifier(),
+            'MLPClassifier': MLPClassifier(),
+            'LogisticRegression': LogisticRegression(),
+        }
+
+    def test_classifiers(self):
+        """
+        Test that the 'classifiers' property returns
+        a list of valid classifiers
+        """
+        self.assertEqual(
+            self.model.classifiers, self.model_dict.keys())
+
+
+class TestCLFTypes(TestCase):
+    """
+    Test that the clf argument can handle multiple types.
+    """
+
+    def setUp(self):
+        # Get data
+        from sklearn import datasets
+        iris = datasets.load_iris()
+        self.x = iris['data']
+        self.y = iris['target']
+
+    def test_sklearn_classifier(self):
+        """
+        Test that object accepts a sklearn classifier
+        """
+        clf = KNeighborsClassifier()
+        model = GSCV(clf, self.x, self.y)
+        self.assertEqual(
+            type(model._get_model(clf)), type(KNeighborsClassifier())
+        )
+
+    def test_string(self):
+        """
+        Test that object accepts a string
+        """
+        clf = 'KNeighborsClassifier'
+        model = GSCV(clf, self.x, self.y)
+        self.assertEqual(
+            type(model._get_model(clf)), type(KNeighborsClassifier())
+        )
+
 
 class TestExceptions(TestCase):
     """
@@ -39,7 +105,7 @@ class TestExceptions(TestCase):
         Make sure that using a type that is not a model
         raises the correct error message.
         """
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             GSCV('doesnotexist', self.x, self.y)
 
     def test_check_model_not_a_sklearn_model(self):
