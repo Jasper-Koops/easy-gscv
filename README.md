@@ -35,9 +35,19 @@ gscv_model.score()
 ```
 
 
+## install
+
+*requires python 3.7+*
+
+```
+pip install easy-gscv
+```
+
+
 ## create
 
 ```
+from easy_gscv.models import GSCV
 clf = LogisticRegression()
 gscv_model = GSCV(
     clf(), X, y, cv=15, n_jobs=-1, params={
