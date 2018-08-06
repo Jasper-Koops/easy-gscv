@@ -43,7 +43,9 @@ class TestProperties(TestCase):
         a list of valid classifiers
         """
         self.assertEqual(
-            self.model.classifiers, self.model_dict.keys())
+            self.model.classifiers,
+            [key for key, value in self.model_dict.items()]
+        )
 
 
 class TestCLFTypes(TestCase):
