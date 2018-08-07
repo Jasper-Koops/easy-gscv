@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Jasper-Koops/easy-gscv.svg?branch=master)](https://travis-ci.org/Jasper-Koops/easy-gscv)
 [![codecov](https://codecov.io/gh/Jasper-Koops/easy-gscv/branch/master/graph/badge.svg)](https://codecov.io/gh/Jasper-Koops/easy-gscv)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 ## Easy Grid Search / Cross Validation
 
