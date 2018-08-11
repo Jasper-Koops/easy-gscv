@@ -114,6 +114,7 @@ supporting all scikit-learn classifiers in the future.
 * GradientBoostingClassifier
 * MLPClassifier
 * LogisticRegression
+* SVM (Support Vector Machines)
 
 
 ## get_fit_details
