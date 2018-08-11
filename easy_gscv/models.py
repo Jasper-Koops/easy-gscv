@@ -1,7 +1,7 @@
 """
 High level objects to automate large parts of the classifier training workflow.
 """
-from typing import Optional, Dict, Union, List
+from typing import Optional, Dict, Union, List, Any
 from sklearn.model_selection import (  # type: ignore
     train_test_split, GridSearchCV
 )  # type: ignore
@@ -11,6 +11,7 @@ from sklearn.ensemble import (  # type: ignore
 from sklearn.neighbors import KNeighborsClassifier  # type: ignore
 from sklearn.linear_model import LogisticRegression  # type: ignore
 from sklearn.neural_network import MLPClassifier  # type: ignore
+from sklearn.svm import SVC  # type: ignore
 
 
 # Create sklearn_classifiers Union object for mypy
@@ -41,13 +42,32 @@ class GSCV:
         'GradientBoostingClassifier': GradientBoostingClassifier(),
         'MLPClassifier': MLPClassifier(),
         'LogisticRegression': LogisticRegression(),
+        'SVC': SVC()
     }
 
     def __init__(
             self, clf, X, y, cross_vals: int = 10, random_state: int = 42,
             test_size: float = 0.33, n_jobs: int = 1,
-            params: Optional[Dict[str, Union[str, float]]] = None
-    ) -> None:
+            params: Optional[
+                Union[
+                    Dict[
+                        str,
+                        Union[
+                            str, float,
+                            Union[List[Union[str, float, int]]]
+                        ]
+                    ],
+                    List[
+                        Dict[
+                            str,
+                            Union[
+                                str, float,
+                                Union[List[Union[str, float, int]]]
+                            ]
+                        ]
+                    ]
+                ]
+            ] = None) -> None:
 
         # Check if classifier is valid and assign it if true
         self.clf = self._get_model(clf)
@@ -122,7 +142,7 @@ class GSCV:
         name = self._get_model_name(clf, 'classifier')
         return self.model_dict[name]
 
-    def _get_model_params(self) -> Dict:
+    def _get_model_params(self) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
         """
         An Internal method to get a matching model_param dict for the
         provided classifier, called only if no params are provided.
@@ -167,8 +187,25 @@ class GSCV:
             'LogisticRegression': {
                 'C': [0.01, 1, 100],
                 'penalty': ['l1', 'l2']
-            }
-        }
+            },
+            # List of dicts for the SVM, as the params differ per kernel type.
+            'SVC': [
+                {
+                    'kernel': ['rbf'],
+                    'C': [0.1, 1, 100, 1000],
+                    'gamma': [0.01, 0.1, 1, 10, 'auto']
+                },
+                {
+                    'kernel': ['poly'],
+                    'degree': [1, 2, 3, 4],
+                    'coef0': [0.0, 1],
+                    'C': [0.1, 1, 100, 1000],
+                    'gamma': [0.01, 0.1, 1, 10, 'auto']
+                },
+            ]
+        }  # type: Dict
+        # ^ Added type annotation, as mypy kept thinking 'param_dict'
+        # was an Object.
         params = param_dict[self._get_model_name(self.clf, 'classifier')]
         return params
 
