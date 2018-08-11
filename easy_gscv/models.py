@@ -191,12 +191,12 @@ class GSCV:
             # List of dicts for the SVM, as the params differ per kernel type.
             'SVC': [
                 {
-                    'kernel': 'rbf',
+                    'kernel': ['rbf'],
                     'C': [0.1, 1, 100, 1000],
                     'gamma': [0.01, 0.1, 1, 10, 'auto']
                 },
                 {
-                    'kernel': 'poly',
+                    'kernel': ['poly'],
                     'degree': [1, 2, 3, 4],
                     'coef0': [0.0, 1],
                     'C': [0.1, 1, 100, 1000],
