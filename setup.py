@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="easy-gscv",
-    version="0.1.2",
+    version="0.2",
     author="Jasper Koops",
     author_email="jasperkoops91@gmail.com",
     description=(
